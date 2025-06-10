@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Nilai Jasmani Polri</title>
+    <link rel="stylesheet" href="style.css"> <!-- Assuming style.css is not used as styles are embedded -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #eaf1fb 0%, #f5f7fa 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: #22304a;
+            color: #fff;
+            padding: 32px 0 20px 0;
+            text-align: center;
+            font-size: 2.0em; /* Adjusted font size */
+            letter-spacing: 2px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+        }
+        .container {
+            background: #fff;
+            max-width: 480px; /* Increased max-width for more fields */
+            margin: 30px auto 24px auto; /* Adjusted margin */
+            padding: 30px 32px 28px 32px; /* Adjusted padding */
+            border-radius: 18px;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.10);
+        }
+        .form-title {
+            text-align: center;
+            color: #22304a;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            margin-top: 18px; /* Adjusted margin */
+            font-weight: 600;
+            color: #22304a;
+            font-size: 1.0em; /* Adjusted font size */
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px; /* Adjusted padding */
+            margin-top: 6px; /* Adjusted margin */
+            border: 1.5px solid #bfc9d1;
+            border-radius: 8px;
+            font-size: 1.0em; /* Adjusted font size */
+            background: #f7fafd;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+            box-sizing: border-box;
+        }
+        input[type="number"]:focus, select:focus {
+            border: 1.5px solid #22304a;
+            box-shadow: 0 0 0 2px #eaf1fb;
+        }
+        button {
+            margin-top: 30px;
+            padding: 14px 0;
+            width: 100%;
+            background: #ffc107; /* Yellow button color from image */
+            color: #333; /* Dark text for yellow button */
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        }
+        button:hover, button:focus {
+            background: #e0a800; /* Darker yellow for hover */
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        .result {
+            margin-top: 28px;
+            color: #22304a;
+            background: #eaf1fb;
+            padding: 16px 15px;
+            border-radius: 8px;
+            text-align: left; /* Changed to left for detailed results */
+            font-size: 1.0em; /* Adjusted font size */
+            min-height: 40px;
+            line-height: 1.6;
+        }
+        .result h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        .result b {
+            color: #1a232f;
+        }
+        .footer {
+            text-align: center;
+            color: #888;
+            padding: 18px 0 10px 0;
+            font-size: 1em;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Kalkulator Nilai Jasmani
+    </div>
+    <div class="container">
+        <div class="form-title">Hitung Nilai Jasmani T.A 2025</div>
+        <form id="jasmaniForm" onsubmit="return hitungNilaiJasmani();">
+            <label for="jenisKelamin">Jenis Kelamin:</label>
+            <select id="jenisKelamin" required>
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="pria">Pria</option>
+                <option value="wanita">Wanita</option>
+            </select>
+
+            <label for="nilaiLari">Nilai Lari 12 Menit (Tes A):</label>
+            <input type="number" id="nilaiLari" min="0" max="3444" step="any" required placeholder="0-3500">
+
+            <label for="nilaiPullUpChining" id="labelPullUpChining">Nilai Pull Up (Pria) / Chining (Wanita):</label>
+            <input type="number" id="nilaiPullUpChining" min="0" max="100" step="any" required placeholder="0-100">
+
+            <label for="nilaiSitUp">Nilai Sit Up:</label>
+            <input type="number" id="nilaiSitUp" min="0" max="100" step="any" required placeholder="0-100">
+
+            <label for="nilaiPushUp">Nilai Push Up:</label>
+            <input type="number" id="nilaiPushUp" min="0" max="100" step="any" required placeholder="0-100">
+
+            <label for="nilaiShuttleRun">Nilai Shuttle Run:</label>
+            <input type="number" id="nilaiShuttleRun" min="0" max="100" step="any" required placeholder="0-100">
+            
+            <label for="nilaiRenang">Nilai Renang (Tes C):</label>
+            <input type="number" id="nilaiRenang" min="0" max="100" step="any" required placeholder="0-100">
+
+            <button type="submit">Hitung</button>
+        </form>
+        <div class="result" id="hasilPenilaian">
+            Mohon isi semua field dan tekan Hitung.
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2024 Kalkulator Jasmani Polri | Modifikasi oleh GitHub Copilot
+    </div>
+    <script>
+        document.getElementById('jenisKelamin').addEventListener('change', function() {
+            const gender = this.value;
+            const labelPullUpChining = document.getElementById('labelPullUpChining');
+            const inputPullUpChining = document.getElementById('nilaiPullUpChining');
+            if (gender === 'pria') {
+                labelPullUpChining.textContent = 'Nilai Pull Up (Pria):';
+            } else if (gender === 'wanita') {
+                labelPullUpChining.textContent = 'Nilai Chining (Wanita):';
+            } else {
+                labelPullUpChining.textContent = 'Nilai Pull Up / Chining:';
+            }
+        });
+
+        function hitungNilaiJasmani() {
+            const jenisKelamin = document.getElementById('jenisKelamin').value;
+            const nilaiLari = parseFloat(document.getElementById('nilaiLari').value);
+            const nilaiPullUpChining = parseFloat(document.getElementById('nilaiPullUpChining').value);
+            const nilaiSitUp = parseFloat(document.getElementById('nilaiSitUp').value);
+            const nilaiPushUp = parseFloat(document.getElementById('nilaiPushUp').value);
+            const nilaiShuttleRun = parseFloat(document.getElementById('nilaiShuttleRun').value);
+            const nilaiRenang = parseFloat(document.getElementById('nilaiRenang').value);
+
+            const hasilDiv = document.getElementById('hasilPenilaian');
+
+            if (!jenisKelamin) {
+                hasilDiv.innerHTML = "Mohon pilih Jenis Kelamin.";
+                return false;
+            }
+
+            const scores = [
+                {value: nilaiLari, name: "Nilai Lari"},
+                {value: nilaiPullUpChining, name: "Nilai Pull Up/Chining"},
+                {value: nilaiSitUp, name: "Nilai Sit Up"},
+                {value: nilaiPushUp, name: "Nilai Push Up"},
+                {value: nilaiShuttleRun, name: "Nilai Shuttle Run"},
+                {value: nilaiRenang, name: "Nilai Renang"}
+            ];
+
+            for (const score of scores) {
+                if (isNaN(score.value)) {
+                    hasilDiv.innerHTML = `Mohon isi ${score.name} dengan angka yang valid.`;
+                    return false;
+                }
+                if (score.value < 0 || score.value > 100) {
+                    hasilDiv.innerHTML = `${score.name} harus antara 0 dan 100.`;
+                    return false;
+                }
+            }
+            
+            const tesA = nilaiLari;
+            const tesBComponents = [nilaiPullUpChining, nilaiPushUp, nilaiSitUp, nilaiShuttleRun];
+            const tesB = tesBComponents.reduce((sum, val) => sum + val, 0) / tesBComponents.length;
+            const tesC = nilaiRenang;
+
+            const nilaiAkhir = (tesA * 0.40) + (tesB * 0.30) + (tesC * 0.30);
+
+            hasilDiv.innerHTML =
+                `<h3>Hasil Penilaian:</h3>` +
+                `Nilai Tes A (Lari): <b>${tesA.toFixed(2)}</b><br>` +
+                `Nilai Tes B (Rata-rata): <b>${tesB.toFixed(2)}</b><br>` +
+                `&nbsp;&nbsp;&nbsp;&nbsp;<em>(Pull Up/Chining: ${nilaiPullUpChining.toFixed(2)}, Push Up: ${nilaiPushUp.toFixed(2)}, Sit Up: ${nilaiSitUp.toFixed(2)}, Shuttle Run: ${nilaiShuttleRun.toFixed(2)})</em><br>` +
+                `Nilai Tes C (Renang): <b>${tesC.toFixed(2)}</b><br><br>` +
+                `<b>Nilai Akhir Jasmani: ${nilaiAkhir.toFixed(2)}</b>`;
+
+            return false; // Prevent form submission
+        }
+    </script>
+</body>
+</html>
