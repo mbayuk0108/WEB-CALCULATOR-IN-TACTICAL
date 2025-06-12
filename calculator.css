@@ -65,3 +65,14 @@
     background: #e0a800;
     box-shadow: 0 4px 16px rgba(44,62,80,0.13);
     }
+.back-home-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 20;
+    background: rgba(105,120,79,0.9);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    }
